@@ -1,11 +1,21 @@
+import { Box } from '@chakra-ui/react';
 import React from 'react';
+import PageContent from '../../../src/components/Layout/PageContent';
 
-type submitProps = {
-    
-};
 
-const submit:React.FC<submitProps> = () => {
+
+const SubmitPostPage = () => {
     
-    return <div>Have a good coding</div>
+    return(
+        <PageContent>
+            <>
+            <Box></Box>
+            {/* NewPostForm */}
+            </>
+            <>  
+            {/* About */}
+             </>
+        </PageContent>
+    )
 }
-export default submit;
+export default SubmitPostPage;
