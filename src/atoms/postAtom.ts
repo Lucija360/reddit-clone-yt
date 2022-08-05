@@ -2,10 +2,10 @@ import { atom } from "recoil";
 import { Timestamp } from "firebase/firestore";
 
 export type Post = {
-  id: string;
+  id?: string;
   communityId: string;
   communityImageURL?: string;
-  userDisplayText: string; // change to authorDisplayText
+  creatorDisplayName: string; // change to authorDisplayText
   creatorId: string;
   title: string;
   body: string;
@@ -17,8 +17,8 @@ export type Post = {
   };
   imageURL?: string;
   postIdx?: number;
-  createdAt?: Timestamp;
-  editedAt?: Timestamp;
+  createdAt: Timestamp;
+  editedAt: Timestamp;
 };
 
 export type PostVote = {
