@@ -39,7 +39,6 @@ const About: React.FC<AboutProps> = ({
   loading,
 }) => {
   const [user] = useAuthState(auth); // will revisit how 'auth' state is passed
-  const router = useRouter();
   const selectFileRef = useRef<HTMLInputElement>(null);
   const setCommunityStateValue = useSetRecoilState(communityState);
 
@@ -149,7 +148,7 @@ const About: React.FC<AboutProps> = ({
                 )}
               </Flex>
               {!onCreatePage && (
-                <Link href={`/r/${router.query.community}/submit`}>
+                <Link href={`/r/${communityData.id}/submit`}>
                   <Button mt={3} height="30px">
                     Create Post
                   </Button>
