@@ -26,12 +26,13 @@ const CommunityPage:React.FC<CommunityPageProps> = ({communityData}) => {
         return <CommunityNotFound />
     } 
 
-//     useEffect(() => {
-//  setCommunityStateValue(prev => ({
-//     ...prev, 
-//     currentCommunity: communityData,
-//  }))
-//     }, []);
+    useEffect(() => {
+    setCommunityStateValue(prev => ({
+    ...prev, 
+    currentCommunity: communityData,
+ }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return(
         <>
