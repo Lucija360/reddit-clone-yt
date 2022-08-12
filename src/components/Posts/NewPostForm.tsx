@@ -16,6 +16,7 @@ import useSelectFile from '../../hooks/useSelectFile';
 
 type NewPostFormProps = {
   user: User;
+  communityImageURL?: string;
 };
 
 
@@ -50,7 +51,8 @@ export type TabItem = {
 
 
 const NewPostForm:React.FC<NewPostFormProps> = ({ 
-  user
+  user,
+  communityImageURL,
 }) => {
 
     const {selectedFile, setSelectedFile,onSelectFile}= useSelectFile();
@@ -75,6 +77,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           const newPost: Post = {
               communityId: communityId as string,
               creatorId: user?.uid,
+              communityImageURL: communityImageURL || "",
               creatorDisplayName: user.email!.split('@')[0],
               title: textInputs.title,
               body: textInputs.body,
