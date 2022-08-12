@@ -9,6 +9,7 @@ import { IoImageOutline } from "react-icons/io5";
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "../../atoms/authModalAtom";
 import { auth } from "../../firebase/clientApp";
+import useDirectory from "../../hooks/useDirectory";
 
 
 type CreatePostProps = {};
@@ -16,6 +17,7 @@ type CreatePostProps = {};
 const CreatePostLink: React.FC<CreatePostProps> = () => {
   const router = useRouter();
   const [user] = useAuthState(auth);
+  const {toggleMenuOpen} = useDirectory()
   const setAuthModalState = useSetRecoilState(authModalState);
   const onClick = () => {
     // Could check for user to open auth modal before redirecting to submit
@@ -25,7 +27,13 @@ const CreatePostLink: React.FC<CreatePostProps> = () => {
     }
     // Open directory menu to select community to post to
       const {communityId} = router.query;
-      router.push(`/r/${communityId}/submit`);
+
+      if(communityId){
+        router.push(`/r/${communityId}/submit`);
+        return;
+      }
+      
+      toggleMenuOpen();
   };
   return (
     <Flex
