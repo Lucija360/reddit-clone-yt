@@ -1,12 +1,16 @@
 import { Stack } from '@chakra-ui/react';
 import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 import type { NextPage } from 'next'
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilValue } from 'recoil';
 import { communityState } from '../src/atoms/communitiesAtom';
-import { Post } from '../src/atoms/postAtom';
+import { Post, PostVote } from '../src/atoms/postAtom';
 import CreatePostLink from '../src/components/Community/CreatePostLink';
+import PersonalHome from '../src/components/Community/PersonalHome';
+import Premium from '../src/components/Community/Premium';
+import Recommendations from '../src/components/Community/Recommendations';
 import PageContent from '../src/components/Layout/PageContent'
 import PostItem from '../src/components/Posts/PostItem';
 import PostLoader from '../src/components/Posts/PostLoader';
@@ -72,7 +76,27 @@ const Home: NextPage = () => {
 
   };
 
-  const getUserPostVotes = () => {};
+  const getUserPostVotes = async () => {
+    try{
+      const postIds = postStateValue.posts.map(post => post.id);
+      const postVotesQuery = query(
+        collection(firestore, `users/${user?.uid}/postVotes`),
+        where("postId", "in", postIds)
+      );
+      const postVoteDocs = await getDocs(postVotesQuery);
+      const postVotes = postVoteDocs.docs.map((doc) => ({ 
+        id: doc.id, 
+        ...doc.data(),
+      }));
+
+      setPostStateValue(prev => ({
+        ...prev,
+        postVotes: postVotes as PostVote[]
+      }))
+    }catch(error) {
+      console.log('getUserPostVotes error', error);
+    }
+  };
 
 
   useEffect(() => {
@@ -83,36 +107,51 @@ const Home: NextPage = () => {
    if (!user && !loadingUser) buildNoUserHomeFeed();
  }, [user, loadingUser]);
 
+ useEffect(() => {
+      if(user && postStateValue.posts.length) getUserPostVotes();
+      return () => {
+        setPostStateValue((prev) => ({
+          ...prev,
+          postVotes: [],
+        }));
+      }
+ }, [user, postStateValue.posts])
+
   return (
-    <PageContent>
-      <>
-      <CreatePostLink />
-      {loading ? (
-        <PostLoader />
-      ) : (
-        <Stack>
-           {postStateValue.posts.map((post) => (
-            <PostItem 
-            key={post.id}
-            post={post}
-            onSelectPost={onSelectPost}
-            onDeletePost={onDeletePost}
-            onVote={onVote}
-            userVoteValue={postStateValue.postVotes.find(
-              (item) => item.postId === post.id
-            )?.voteValue}
-            userIsCreator={user?.uid === post.creatorId}
-            homePage
-            />
-           ))}
+    <><div>
+      <Head>
+        <title>Reddit 2.0</title>
+      </Head>
+    </div><PageContent>
+        <>
+          <CreatePostLink />
+          {loading ? (
+            <PostLoader />
+          ) : (
+            <Stack>
+              {postStateValue.posts.map((post) => (
+                <PostItem
+                  key={post.id}
+                  post={post}
+                  onSelectPost={onSelectPost}
+                  onDeletePost={onDeletePost}
+                  onVote={onVote}
+                  userVoteValue={postStateValue.postVotes.find(
+                    (item) => item.postId === post.id
+                  )?.voteValue}
+                  userIsCreator={user?.uid === post.creatorId}
+                  homePage />
+              ))}
+            </Stack>
+
+          )}
+        </>
+        <Stack spacing={5}>
+          <Recommendations />
+          <Premium />
+          <PersonalHome />
         </Stack>
-       
-      )}
-      </>
-      <>
-      {/* Recommendations */}
-      </>
-    </PageContent>
+      </PageContent></>
   )
   
 }

@@ -91,7 +91,7 @@ const About: React.FC<AboutProps> = ({
   };
 
   return (
-    <Box pt={pt} position="sticky" top="14px">
+    <Box pt={pt} position="sticky" top="14px" display={{base: 'none', md: "unset"}}>
       <Flex
         justify="space-between"
         align="center"
