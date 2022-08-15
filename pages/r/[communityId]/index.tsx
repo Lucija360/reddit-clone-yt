@@ -22,18 +22,17 @@ const CommunityPage:React.FC<CommunityPageProps> = ({communityData}) => {
     console.log("here is data", communityData);
     const setCommunityStateValue = useSetRecoilState(communityState)
 
+    useEffect(() => {
+        setCommunityStateValue(prev => ({
+        ...prev, 
+        currentCommunity: communityData,
+     }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [communityData]);
+
     if(!communityData){
         return <CommunityNotFound />
     } 
-
-    useEffect(() => {
-    setCommunityStateValue(prev => ({
-    ...prev, 
-    currentCommunity: communityData,
- }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [communityData]);
-
     return(
         <>
         <Header communityData={communityData} />
